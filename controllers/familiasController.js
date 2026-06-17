@@ -2,7 +2,7 @@ const db = require('../db');
 
 const getFamilias = async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM Familias ORDER BY codigo_familia ASC');
+        const [rows] = await db.query('SELECT * FROM familias ORDER BY codigo_familia ASC');
         res.json(rows);
     } catch (error) {
         console.error('Error al obtener familias:', error);
@@ -19,7 +19,7 @@ const crearFamilia = async (req, res) => {
 
     try {
         const [result] = await db.query(
-            'INSERT INTO Familias (codigo_familia, notas) VALUES (?, ?)',
+            'INSERT INTO familias (codigo_familia, notas) VALUES (?, ?)',
             [codigo_familia, notes || null]
         );
         

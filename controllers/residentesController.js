@@ -3,9 +3,14 @@ const db = require('../db');
 // 1. Obtener Residentes Activos
 const getActivos = async (req, res) => {
     try {
-        const [residentes] = await db.query('SELECT * FROM Residentes WHERE estado = "activo" ORDER BY fecha_ingreso DESC');
+        // Se usa el ? y se pasa 'activo' como parámetro en un arreglo
+        const [residentes] = await db.query(
+            'SELECT * FROM residentes WHERE estado = ? ORDER BY fecha_ingreso DESC', 
+            ['activo']
+        );
         res.json(residentes);
     } catch (error) {
+        console.error('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ERROR EN GET ACTIVOS:', error.message);
         res.status(500).json({ mensaje: 'Error al consultar residentes activos' });
     }
 };
@@ -13,14 +18,17 @@ const getActivos = async (req, res) => {
 // 2. Obtener Residentes Archivados
 const getArchivados = async (req, res) => {
     try {
-        const [residentes] = await db.query('SELECT * FROM Residentes WHERE estado = "archivado" ORDER BY fecha_ingreso DESC');
+        // Se usa el ? y se pasa 'archivado' como parámetro
+        const [residentes] = await db.query(
+            'SELECT * FROM residentes WHERE estado = ? ORDER BY fecha_ingreso DESC', 
+            ['archivado']
+        );
         res.json(residentes);
     } catch (error) {
+        console.error('<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ERROR EN GET ARCHIVADOS:', error.message);
         res.status(500).json({ mensaje: 'Error al consultar el historial' });
     }
-};
-
-// 3. Registrar Nuevo Residente
+};// 3. Registrar Nuevo Residente
 const registrar = async (req, res) => {
     try {
         // CORRECCIÓN: Leer las variables con los mismos nombres que envía React (camelCase)
@@ -76,10 +84,10 @@ const actualizar = async (req, res) => {
 
         valores.push(id); 
 
-        const query = `UPDATE Residentes SET nombre=?, sexo=?, edad=?, nacionalidad=?, familia_id=?, fecha_ingreso=?, contacto_emergencia=?, condicion=?, destino=?, viaje_programado=? ${queryExtra} WHERE id=?`;
+        const query = `UPDATE residentes SET nombre=?, sexo=?, edad=?, nacionalidad=?, familia_id=?, fecha_ingreso=?, contacto_emergencia=?, condicion=?, destino=?, viaje_programado=? ${queryExtra} WHERE id=?`;
         
         await db.query(query, valores);
-        await db.query('INSERT INTO Auditoria (usuario_id, accion, residente_id, detalles) VALUES (?, "EDICION", ?, "Edición de ficha de residente")', [req.usuario.id, id]);
+        await db.query('INSERT INTO auditoria (usuario_id, accion, residente_id, detalles) VALUES (?, "EDICION", ?, "Edición de ficha de residente")', [req.usuario.id, id]);
 
         res.json({ mensaje: 'Residente actualizado correctamente' });
     } catch (error) {

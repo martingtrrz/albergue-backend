@@ -7,7 +7,7 @@ const login = async (req, res) => {
 
     try {
         // 1. Buscar si el usuario existe y está activo
-        const [rows] = await db.query('SELECT * FROM Usuarios WHERE username = ? AND activo = 1', [username]);
+        const [rows] = await db.query('SELECT * FROM usuarios WHERE username = ? AND activo = 1', [username]);
         if (rows.length === 0) {
             return res.status(401).json({ mensaje: 'Usuario no encontrado o cuenta inactiva' });
         }
