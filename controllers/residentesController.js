@@ -87,7 +87,7 @@ const actualizar = async (req, res) => {
         const query = `UPDATE residentes SET nombre=?, sexo=?, edad=?, nacionalidad=?, familia_id=?, fecha_ingreso=?, contacto_emergencia=?, condicion=?, destino=?, viaje_programado=? ${queryExtra} WHERE id=?`;
         
         await db.query(query, valores);
-        await db.query('INSERT INTO auditoria (usuario_id, accion, residente_id, detalles) VALUES (?, "EDICION", ?, "Edición de ficha de residente")', [req.usuario.id, id]);
+        await db.query('INSERT INTO auditoria (usuario_id, accion, residente_id, detalles) VALUES (?, ?, ?, ?)', [req.usuario.id, 'EDICION', id, 'Edición de ficha de residente']);
 
         res.json({ mensaje: 'Residente actualizado correctamente' });
     } catch (error) {
